@@ -10,9 +10,9 @@ alias gp="git pull -p"
 alias gc="git checkout"
 alias gcm="git commit -m"
 alias chrome="open -a '/Applications/Google Chrome.app'"
-alias saml="saml2aws login -a gsuite --skip-prompt --role='arn:aws:iam::511429170406:role/GSuiteAdmin'"
+alias saml="saml2aws login -a gsuite --skip-prompt --role='arn:aws:iam::1234567890:role/GSuiteAdmin'"
 alias memo="code ~/work/memo/memo_`date "+%Y%m%d_%H%M%S"`.md"
-alias blog="/Users/kzk_maeda/work/self-project/blog/kzk-blog/bin/create_post.sh"
+alias blog="${HOME}/work/self-project/blog/kzk-blog/bin/create_post.sh"
 
 # Get Global IP Address
 alias gip="curl inet-ip.info"
@@ -29,12 +29,35 @@ export PATH=$HOME/anaconda3/bin:$PATH
 # for Rust
 export PATH=$HOME/.cargo/bin:$PATH
 
+# for Node
+export PATH="$HOME/.nodenv/bin:$PATH"
+eval "$(nodenv init -)"
+
+# TypeScript
+export PATH=$PATH:`npm bin -g`
+
 # for go
-export GOENV_ROOT=$HOME/.goenv
-export PATH=$GOENV_ROOT/bin:$PATH
-eval "$(goenv init -)"
-export PATH="$GOROOT/bin:$PATH"
-export PATH="$PATH:$GOPATH/bin"
+# export GOENV_ROOT=$HOME/.goenv
+# export PATH=$GOENV_ROOT/bin:$PATH
+# eval "$(goenv init -)"
+# GOENV_DISABLE_GOPATH=11
+# export PATH="$GOROOT/bin:$PATH"
+# export PATH="$PATH:$GOPATH/bin"
+# export PATH=$HOME/go/bin:/usr/local/go/bin:$PATH
+# export GOROOT=/usr/local/go
+export GOROOT=$(go1.18 env GOROOT)
+export PATH=${GOROOT}/bin:${PATH}
+export GOPATH=$HOME/go
+
+# for Java
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home
+
+# GDAL
+export GDAL_LIBRARY_PATH=/usr/local/opt/gdal/lib/libgdal.31.dylib
+export GEOS_LIBRARY_PATH=/usr/local/opt/geos/lib/libgeos.3.10.3.dylib
+
+# eksctl
+fpath=($fpath ~/.zsh/completion)
 
 # 補完機能
 autoload -U compinit
@@ -74,6 +97,9 @@ PROMPT=$PROMPT'%{${fg[yellow]}%}%}%~ %{${reset_color}%} ${vcs_info_msg_0_}
 
 # プロンプト（右）
 # RPROMPT='%{${fg[red]}%}[%~]%{${reset_color}%}'
+# precmd () {
+RPROMPT="%{%(?.$fg[green].$fg[red])%}% 乁( ˙ω˙ )厂 %{$reset_color%}"
+# }
 
 # auto suggestion
 . ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -124,29 +150,36 @@ fbr() {
 # -----------------------------
 
 # env
-export PATH=/Users/kzk_maeda/Library/Python/3.7/bin/:~/.nodebrew/current/bin/:$PATH
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/kzk_maeda/Downloads/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/kzk_maeda/Downloads/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/kzk_maeda/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then source '/Users/kzk_maeda/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+export PATH=${HOME}/Library/Python/3.7/bin/:~/.nodebrew/current/bin/:$PATH
 
 # motd
 cat ~/.motd/motd.txt
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/kzk_maeda/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$('${HOME}/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/Users/kzk_maeda/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/kzk_maeda/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "${HOME}/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "${HOME}/anaconda3/etc/profile.d/conda.sh"
     else
-        export PATH="/Users/kzk_maeda/anaconda3/bin:$PATH"
+        export PATH="${HOME}/anaconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '${HOME}/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '${HOME}/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '${HOME}/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '${HOME}/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+# Added by serverless binary installer
+export PATH="$HOME/.serverless/bin:$PATH"
+yq() {
+  docker run --rm -i -v "${PWD}":/workdir mikefarah/yq "$@"
+}
 
